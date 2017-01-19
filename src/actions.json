@@ -1,12 +1,10 @@
 {
-    "get":{
+    "thing":{
         "temperature":{
             "info":"getTemperatureInfo"
-        },
-        "system":{
-            "time":"getSystemTime"
         }
     },
-    "set":{
-    }
+    "system":{
+            "time":"getSystemTime"
+        }
 }

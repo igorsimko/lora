@@ -5,6 +5,16 @@
    <title>Lora API</title>
    <script src="http://code.jquery.com/jquery-latest.js"></script>
    <script src="client.js"></script>
+   <script>
+   $("#btn").click(function(){
+    $.post("http://localhost:3000/cmd",
+        {
+          text: "What is temperature?"
+        },
+        function(data,status){
+        });
+   });
+   </script>
  </head>
  <body>
    <H1>My Express API server example</H1>
@@ -14,5 +24,7 @@
     <input type="text" name="user[email]">
     <input type="submit" value="Submit">
 </form>
+
+<<button id="btn">post cmd</button>
  </body>
 </html>
