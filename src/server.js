@@ -17,6 +17,8 @@ var app_ai = apiai("fe22179c6de74a429bc43857a69e2dfa");
 var options = {
     sessionId: sessionId
 }
+
+app.use(require('express-promise')());
 app.use(express['static'](__dirname ));
 app.use(bodyParser.urlencoded({
     extended: true
@@ -36,14 +38,22 @@ app.post('/cmd', function(req, res){
 
     var request = app_ai.textRequest(text, options);
 
+    var responseMessage;
     request.on('response', function(response) {
         if (response.status.code == 200) {
             if (response.result != undefined || response.result.size() > 0) {
                 var action = response.result.action;
-                                console.log(response.result);
-
-                console.log("action: " + action);
-                command.callFunctionByName(action, response.result.parameters.functionType);
+                console.log(response.result.parameters);
+                if (response.result.action == 'input.welcome') {
+                    command.setLora(true);
+                } else if (response.result.action == 'shutdown'){
+                    command.setLora(false);
+                } else if (command.isLora()){
+                    command.callFunctionByName(response);
+                }
+                responseMessage = response.result.fulfillment.speech;
+                responseMessage += "  --- lora: " + command.isLora();
+                res.json(responseMessage);
             }
         }
     });
@@ -53,8 +63,6 @@ app.post('/cmd', function(req, res){
     });
     request.end();
 
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.end();
 });
 
 // Express route for any other unrecognised incoming requests

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<home-ai>
+  <thing>
+    <temperature>
+        <action>info</action>
+        <location>outside</location>
+        <function>getTemperatureOutsideInfo</function>
+    </temperature>
+    <temperature>
+        <action>info</action>
+        <location>inside</location>
+        <function>getTemperatureInsideInfo</function>
+    </temperature>
+    <music>
+        <action>volume up</action>
+        <location>notebook</location>
+        <function>ntbVolumeUp</function>
+    </music>
+    <music>
+        <action>volume down</action>
+        <location>notebook</location>
+        <function>ntbVolumeDown</function>
+    </music>
+    <clock>
+        <action>info</action>
+        <location>system</location>
+        <function>getSystemTime</function>
+    </clock>
+  </thing>
+</home-ai>
