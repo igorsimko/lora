@@ -13,13 +13,11 @@
     </temperature>
     <music>
         <action>volume up</action>
-        <location>notebook</location>
-        <function>ntbVolumeUp</function>
+        <function>volumeUp</function>
     </music>
     <music>
         <action>volume down</action>
-        <location>notebook</location>
-        <function>ntbVolumeDown</function>
+        <function>volumeDown</function>
     </music>
     <clock>
         <action>info</action>

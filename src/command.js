@@ -66,16 +66,16 @@ function getRealFunctionCall(response){
     if (things[0][rThing] != undefined) {
         for (var i = 0; i < things[0][rThing].length; i++) {
             var thing = things[0][rThing][i];
-            console.log(thing);
-            if (thing['action'] == rAction && (thing['location'] == rLocation || rLocation == "") ) {
+            if (thing['action'] == rAction && (thing['location'] == rLocation || (rLocation == "") && thing['location'] == undefined) ) {
                     console.log("match ("+ thing['function'] +") :" + thing['action'] + ", " + thing['location']);
+                    return thing['function'];
             }
         }
     }
 }
 
-// get methods
-global.getTemperatureInfo = function getTemperatureInfo(){
+// global functions
+global.getTemperatureOutsideInfo = function getTemperatureOutsideInfo(){
     request.post(
         'http://api.openweathermap.org/data/2.5/weather?q=Bratislava&APPID=25d58ec4b67cf6971203cf044ceda2ec&units=metric',
         function (error, response, body) {
@@ -85,5 +85,21 @@ global.getTemperatureInfo = function getTemperatureInfo(){
         }
     );
 }
+// get methods
+global.getTemperatureInsideInfo = function getTemperatureInsideInfo(){
+  console.log("Inside weather.");
+}
 
-// set methods
+global.getSystemTime = function getSystemTime(){
+    console.log(new Date());
+}
+
+global.volumeUp = function volumeUp(){
+    console.log("volume up!");
+}
+global.volumeDown = function volumeDown(){
+    console.log("volume down!");
+}
+
+
+

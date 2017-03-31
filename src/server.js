@@ -5,12 +5,15 @@ var crypto = require('crypto');
 var bodyParser = require('body-parser');
 var app = express();
 var command = require('./command.js');
+var LOG = require('./config/logger.js').getLogger();
 
-console.log("Initializing server...");
+
+
+LOG.info("Initializing server...");
 
 var sha = crypto.createHash('sha256');
 var sessionId = sha.update(Math.random().toString()).digest('hex').substring(0,20);
-console.log("SessionID=["+sessionId+"]");
+LOG.info("SessionID = ["+sessionId+"]");
 
 var app_ai = apiai("fe22179c6de74a429bc43857a69e2dfa");
 
@@ -25,14 +28,50 @@ app.use(bodyParser.urlencoded({
     })
 );
 
+
+app.post('/upload',function(req,res){
+    var statusMsg = "";
+    var voiceRequest = app_ai.voiceRequest();
+
+    chunks=[];
+    req.on('data',function(chunk){
+        chunks.push(chunk);
+
+    });
+
+    req.on('end',function(){
+        var data = Buffer.concat(chunks);
+        fs.writeFile(path,data,'binary',function(err){
+            if(err){
+                statusMsg = 'couldnt make file' + err;
+                LOG.debug(statusMsg);
+            } else {
+                statusMsg = "Audio received successfully.";
+                LOG.debug(statusMsg);
+                voiceRequest.write(data);
+            }
+        });
+    });
+
+    voiceRequest.on('response', function(response) {
+        LOG.debug(response);
+    });
+
+    voiceRequest.on('error', function(error) {
+        LOG.debug(error);
+    });
+
+    res.status(200).send(statusMsg);
+ });
+
 app.post('/cmd', function(req, res){
-    console.log('POST\t/cmd');
+    LOG.info('POST\t/cmd');
     var text;
     if (req.body != undefined) {
         text = req.body.text;
         //console.log('BODY\ttext: '+ req.body.text);
     } else if(text != undefined){
-        console.log('ERROR\t body.text is undefined');
+        LOG.error('ERROR\t body.text is undefined');
         errorResponse(res, "Body.text is undefined");
     }
 
@@ -43,7 +82,7 @@ app.post('/cmd', function(req, res){
         if (response.status.code == 200) {
             if (response.result != undefined || response.result.size() > 0) {
                 var action = response.result.action;
-                console.log(response.result.parameters);
+                LOG.debug(response.result.parameters);
                 if (response.result.action == 'input.welcome') {
                     command.setLora(true);
                 } else if (response.result.action == 'shutdown'){
@@ -59,7 +98,7 @@ app.post('/cmd', function(req, res){
     });
 
     request.on('error', function(error) {
-        console.log(error);
+        LOG.error(error);
     });
     request.end();
 
@@ -89,4 +128,4 @@ function errorResponse(res, msg){
 }
 
 app.listen(3000);
-console.log('App Server running at port 3000');
+LOG.info('App Server running at port 3000');
