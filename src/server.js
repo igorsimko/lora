@@ -7,7 +7,7 @@ var app = express();
 var command = require('./command.js');
 var LOG = require('./config/logger.js').getLogger();
 
-
+var DEFAULT_API_URL = "/api"
 
 LOG.info("Initializing server...");
 
@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({
 );
 
 
-app.post('/upload',function(req,res){
+app.post(DEFAULT_API_URL + '/upload',function(req,res){
     var statusMsg = "";
     var voiceRequest = app_ai.voiceRequest();
 
@@ -64,7 +64,7 @@ app.post('/upload',function(req,res){
     res.status(200).send(statusMsg);
  });
 
-app.post('/cmd', function(req, res){
+app.post(DEFAULT_API_URL + '/cmd', function(req, res){
     LOG.info('POST\t/cmd');
     var text;
     if (req.body != undefined) {
