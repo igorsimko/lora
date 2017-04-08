@@ -41,6 +41,9 @@ module.exports = {
   },
   isLora: function(){
     return LORA;
+  },
+  tell: function(text){
+    exec("./shell/speak.sh '" + text + "'");
   }
 };
 
@@ -72,10 +75,6 @@ function getRealFunctionCall(response){
             }
         }
     }
-}
-
-function tell(text){
-    exec("./shell/speak.sh '" + text + "'");
 }
 
 // global functions
