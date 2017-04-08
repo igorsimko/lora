@@ -5,6 +5,9 @@ var crypto = require('crypto');
 var bodyParser = require('body-parser');
 var app = express();
 var command = require('./command.js');
+var sys = require('sys')
+var exec = require('child_process').exec;
+
 var LOG = require('./config/logger.js').getLogger();
 
 var DEFAULT_API_URL = "/api"
@@ -23,10 +26,7 @@ var options = {
 
 app.use(require('express-promise')());
 app.use(express['static'](__dirname ));
-app.use(bodyParser.urlencoded({
-    extended: true
-    })
-);
+app.use(bodyParser.json());
 
 
 app.post(DEFAULT_API_URL + '/upload',function(req,res){
@@ -93,6 +93,7 @@ app.post(DEFAULT_API_URL + '/cmd', function(req, res){
                 responseMessage = response.result.fulfillment.speech;
                 responseMessage += "  --- lora: " + command.isLora();
                 res.json(responseMessage);
+                exec("espeak -ven+f3 -s7'"+ response.result.fulfillment.speech +"' 2>/dev/null", puts);
             }
         }
     });
@@ -117,6 +118,8 @@ app.use(function(err, req, res, next) {
     next(err);
   }
 });
+
+function puts(error, stdout, stderr) { sys.puts(stdout) }
 
 function errorResponse(res, msg){
     if (msg != undefined) {

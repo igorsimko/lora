@@ -6,7 +6,7 @@ package sk.simigo.loragooglerecognition.utils;
 
 public class ConstantsUtils {
 
-    public static final String DEFAULT_LORA_URL = "http://192.168.2.103";
+    public static final String DEFAULT_LORA_URL = "http://192.168.2.200";
     public static final String DEFAULT_LORA_PORT = "3000";
     public static final String DEFAULT_LORA_API = "/api/cmd";
 
