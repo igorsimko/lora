@@ -74,12 +74,17 @@ function getRealFunctionCall(response){
     }
 }
 
+function tell(text){
+    exec("./shell/speak.sh '" + text + "'");
+}
+
 // global functions
 global.getTemperatureOutsideInfo = function getTemperatureOutsideInfo(){
     request.post(
         'http://api.openweathermap.org/data/2.5/weather?q=Bratislava&APPID=25d58ec4b67cf6971203cf044ceda2ec&units=metric',
         function (error, response, body) {
             if (!error && response.statusCode == 200) {
+                JSON.parse(body).main.temp
                 console.log(JSON.parse(body).main.temp);
             }
         }
@@ -99,6 +104,12 @@ global.volumeUp = function volumeUp(){
 }
 global.volumeDown = function volumeDown(){
     console.log("volume down!");
+}
+global.playMusic = function playMusic(){
+    exec("./shell/music/mpc-cmd.sh 'play'");
+}
+global.stopMusic = function stopMusic(){
+    exec("./shell/music/mpc-cmd.sh 'stop'");
 }
 
 

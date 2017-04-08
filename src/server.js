@@ -90,11 +90,11 @@ app.post(DEFAULT_API_URL + '/cmd', function(req, res){
                 } else if (command.isLora()){
                     command.callFunctionByName(response);
                 }
+                command.tell(response.result.fulfillment.speech);
+
                 responseMessage = response.result.fulfillment.speech;
-                responseMessage += "  --- lora: " + command.isLora();
+                // responseMessage += "  --- lora: " + command.isLora();
                 res.json(responseMessage);
-                exec("./speak.sh");
-                // exec("espeak -ven+f3 -s7'"+ response.result.fulfillment.speech +"' 2>/dev/null", puts);
             }
         }
     });

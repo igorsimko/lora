@@ -19,6 +19,14 @@
         <action>volume down</action>
         <function>volumeDown</function>
     </music>
+    <music>
+        <action>music.play</action>
+        <function>playMusic</function>
+    </music>
+    <music>
+        <action>music.stop</action>
+        <function>stopMusic</function>
+    </music>
     <clock>
         <action>info</action>
         <location>system</location>
