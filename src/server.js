@@ -5,7 +5,7 @@ var crypto = require('crypto');
 var bodyParser = require('body-parser');
 var app = express();
 var command = require('./command.js');
-var sys = require('sys')
+var sys = require('util');
 var exec = require('child_process').exec;
 
 var LOG = require('./config/logger.js').getLogger();
@@ -93,7 +93,8 @@ app.post(DEFAULT_API_URL + '/cmd', function(req, res){
                 responseMessage = response.result.fulfillment.speech;
                 responseMessage += "  --- lora: " + command.isLora();
                 res.json(responseMessage);
-                exec("espeak -ven+f3 -s7'"+ response.result.fulfillment.speech +"' 2>/dev/null", puts);
+                exec("./speak.sh");
+                // exec("espeak -ven+f3 -s7'"+ response.result.fulfillment.speech +"' 2>/dev/null", puts);
             }
         }
     });
