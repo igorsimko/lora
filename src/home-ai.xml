@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <home-ai>
-  <thing>
+  <things>
     <temperature>
         <action>info</action>
         <location>outside</location>
@@ -32,5 +32,20 @@
         <location>system</location>
         <function>getSystemTime</function>
     </clock>
-  </thing>
+  </things>
+  <agents>
+        <intent>
+            <uids>
+                <uid>music.play</uid>
+                <uid>music_player_control.play</uid>
+            </uids>
+            <function>playMusic</function>
+        </intent>
+        <intent>
+            <uids>
+                <uid>music_player_control.stop</uid>
+            </uids>
+            <function>stopMusic</function>
+        </intent>
+  </agents>
 </home-ai>

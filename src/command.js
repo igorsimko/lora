@@ -42,6 +42,7 @@ module.exports = {
     return LORA;
   },
   tell: function(text){
+    LOG.debug(text);
     exec("./shell/speak.sh '" + text + "'");
   }
 };
@@ -63,7 +64,12 @@ function getRealFunctionCall(response){
     var rAction = params['action'];
     var rLocation = params['location'];
 
-    var things = home_ai['thing'];
+    var things = home_ai['things'];
+
+    if (response.result.agent != undefined || response.result.agent != "") {
+        var firstFunctionTry = getPrebuildAgentAction(response);
+        return firstFunctionTry;
+    }
 
     if (things[0][rThing] != undefined) {
         for (var i = 0; i < things[0][rThing].length; i++) {
@@ -74,6 +80,22 @@ function getRealFunctionCall(response){
             }
         }
     }
+    console.log("No function was found!");
+}
+
+function getPrebuildAgentAction(response){
+    var intentName = response.result.metadata.intentName;
+    var intents = home_ai['agents']
+
+    console.log(intents);
+      // for (var i = 0; i < intents[0][rThing].length; i++) {
+      //       var thing = things[0][rThing][i];
+      //       if (thing['action'] == rAction && (thing['location'] == rLocation || (rLocation == "") && thing['location'] == undefined) ) {
+      //               console.log("match ("+ thing['function'] +") :" + thing['action'] + ", " + thing['location']);
+      //               return thing['function'];
+      //       }
+      // }
+
 }
 
 // global functions
