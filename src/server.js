@@ -7,6 +7,7 @@ var app = express();
 var command = require('./command.js');
 
 var LOG = require('./config/logger.js').getLogger();
+command.setLogger(LOG);
 
 var DEFAULT_API_URL = "/api"
 
@@ -16,7 +17,7 @@ var sha = crypto.createHash('sha256');
 var sessionId = sha.update(Math.random().toString()).digest('hex').substring(0,20);
 LOG.info("SessionID = ["+sessionId+"]");
 
-var app_ai = apiai("fe22179c6de74a429bc43857a69e2dfa");
+var app_ai = apiai("3e3960927dd44827b315f46e97a16b1e");
 
 var options = {
     sessionId: sessionId

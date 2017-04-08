@@ -7,10 +7,14 @@ var xml2js = require('xml2js');
 var sys = require('util');
 var exec = require('child_process').exec;
 
+var LOG = undefined;
+
 var sha = crypto.createHash('sha256');
 var sessionId = sha.update(Math.random().toString()).digest('hex');
 
-var app_ai = apiai("fe22179c6de74a429bc43857a69e2dfa");
+// var app_ai = apiai("fe22179c6de74a429bc43857a69e2dfa");
+var app_ai = apiai("3e3960927dd44827b315f46e97a16b1e");
+
 var home_ai = parseHomeAiXML();
 var parser = new xml2js.Parser();
 
@@ -21,16 +25,19 @@ var options = {
 }
 
 module.exports = {
+  setLogger: function(logger){
+    LOG = logger;
+  },
   callFunctionByName: function (response) {
     if (response == undefined) {
-        console.log("Response is undefined!");
+        LOG.error("Response is undefined!");
         return;
     }
     var callFunction = getRealFunctionCall(response);
     if (callFunction == undefined) {
         return;
     }
-    console.log("Calling function by name ["+ callFunction +"]");
+    LOG.info("Calling function by name ["+ callFunction +"]");
     global[callFunction]();
   },
   setLora: function(loraBoolean){
@@ -42,7 +49,6 @@ module.exports = {
     return LORA;
   },
   tell: function(text){
-    LOG.debug(text);
     exec("./shell/speak.sh '" + text + "'");
   }
 };
@@ -58,7 +64,7 @@ function parseHomeAiXML(){
 }
 
 function getRealFunctionCall(response){
-    console.log("Getting function name ...");
+    LOG.info("Getting function name ...");
     var params = response.result.parameters;
     var rThing = params['thing'];
     var rAction = params['action'];
@@ -66,7 +72,8 @@ function getRealFunctionCall(response){
 
     var things = home_ai['things'];
 
-    if (response.result.agent != undefined || response.result.agent != "") {
+    if (response.result.action != "thing.info") {
+        LOG.info("Response action is not thing.info");
         var firstFunctionTry = getPrebuildAgentAction(response);
         return firstFunctionTry;
     }
@@ -75,27 +82,33 @@ function getRealFunctionCall(response){
         for (var i = 0; i < things[0][rThing].length; i++) {
             var thing = things[0][rThing][i];
             if (thing['action'] == rAction && (thing['location'] == rLocation || (rLocation == "") && thing['location'] == undefined) ) {
-                    console.log("match ("+ thing['function'] +") :" + thing['action'] + ", " + thing['location']);
+                    LOG.info("match ("+ thing['function'] +") :" + thing['action'] + ", " + thing['location']);
                     return thing['function'];
             }
         }
     }
-    console.log("No function was found!");
+    LOG.info("No function was found!");
 }
 
 function getPrebuildAgentAction(response){
     var intentName = response.result.metadata.intentName;
-    var intents = home_ai['agents']
+    if (intentName == undefined || intentName == "") {
+        return;
+    }
 
-    console.log(intents);
-      // for (var i = 0; i < intents[0][rThing].length; i++) {
-      //       var thing = things[0][rThing][i];
-      //       if (thing['action'] == rAction && (thing['location'] == rLocation || (rLocation == "") && thing['location'] == undefined) ) {
-      //               console.log("match ("+ thing['function'] +") :" + thing['action'] + ", " + thing['location']);
-      //               return thing['function'];
-      //       }
-      // }
+    var intents = home_ai['agents'];
 
+    for (var i = 0; i < intents[0]["intent"].length; i++) {
+        var intent = intents[0]["intent"][i];
+        var uids = intent["uids"][0];
+
+        for(var j = 0; j < intent["uids"][0]["uid"].length ; j ++){
+            var uid = intent["uids"][0]["uid"][j];
+            if ((uid != undefined || uid != "") && uid == intentName) {
+                return intent["function"][0];
+            }
+        }
+    }
 }
 
 // global functions
@@ -104,15 +117,16 @@ global.getTemperatureOutsideInfo = function getTemperatureOutsideInfo(){
         'http://api.openweathermap.org/data/2.5/weather?q=Bratislava&APPID=25d58ec4b67cf6971203cf044ceda2ec&units=metric',
         function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log(JSON.parse(body).main.temp);
-                tell(JSON.parse(body).main.temp);
+                var tempText = "Outside temperature is " + JSON.parse(body).main.temp + " degrees";
+                LOG.debug(tempText);
+                module.exports.tell(tempText);
             }
         }
     );
 }
 // get methods
 global.getTemperatureInsideInfo = function getTemperatureInsideInfo(){
-  console.log("Inside weather.");
+    console.log("Inside weather.");
 }
 
 global.getSystemTime = function getSystemTime(){
