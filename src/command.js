@@ -4,8 +4,8 @@ var app = require('express');
 var request = require('request');
 var fs = require('fs');
 var xml2js = require('xml2js');
-
-
+var sys = require('util');
+var exec = require('child_process').exec;
 
 var sha = crypto.createHash('sha256');
 var sessionId = sha.update(Math.random().toString()).digest('hex');
@@ -15,7 +15,6 @@ var home_ai = parseHomeAiXML();
 var parser = new xml2js.Parser();
 
 var LORA = false;
-
 
 var options = {
     sessionId: sessionId
@@ -83,8 +82,8 @@ global.getTemperatureOutsideInfo = function getTemperatureOutsideInfo(){
         'http://api.openweathermap.org/data/2.5/weather?q=Bratislava&APPID=25d58ec4b67cf6971203cf044ceda2ec&units=metric',
         function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                JSON.parse(body).main.temp
                 console.log(JSON.parse(body).main.temp);
+                tell(JSON.parse(body).main.temp);
             }
         }
     );

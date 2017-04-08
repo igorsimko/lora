@@ -5,8 +5,6 @@ var crypto = require('crypto');
 var bodyParser = require('body-parser');
 var app = express();
 var command = require('./command.js');
-var sys = require('util');
-var exec = require('child_process').exec;
 
 var LOG = require('./config/logger.js').getLogger();
 
