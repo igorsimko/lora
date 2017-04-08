@@ -37,8 +37,13 @@ module.exports = {
     if (callFunction == undefined) {
         return;
     }
-    LOG.info("Calling function by name ["+ callFunction +"]");
-    global[callFunction]();
+    LOG.info("Calling function by name = "+ JSON.stringify(callFunction.name));
+
+    if (callFunction.options) {
+         global[callFunction.name](callFunction.options);
+    } else {
+        global[callFunction.name]();
+    }
   },
   setLora: function(loraBoolean){
         if (loraBoolean != undefined) {
@@ -49,7 +54,13 @@ module.exports = {
     return LORA;
   },
   tell: function(text){
-    exec("./shell/speak.sh '" + text + "'");
+    exec("./shell/speak.sh \"" + text + "\"", function(err, stdout, stderr){
+        if (stderr) {
+            LOG.error(stderr);
+        } else if (err) {
+            LOG.error(err);
+        }
+    });
   }
 };
 
@@ -78,6 +89,7 @@ function getRealFunctionCall(response){
         return firstFunctionTry;
     }
 
+    // deprecated
     if (things[0][rThing] != undefined) {
         for (var i = 0; i < things[0][rThing].length; i++) {
             var thing = things[0][rThing][i];
@@ -92,6 +104,8 @@ function getRealFunctionCall(response){
 
 function getPrebuildAgentAction(response){
     var intentName = response.result.metadata.intentName;
+    var rParameters = response.result.parameters;
+
     if (intentName == undefined || intentName == "") {
         return;
     }
@@ -105,7 +119,25 @@ function getPrebuildAgentAction(response){
         for(var j = 0; j < intent["uids"][0]["uid"].length ; j ++){
             var uid = intent["uids"][0]["uid"][j];
             if ((uid != undefined || uid != "") && uid == intentName) {
-                return intent["function"][0];
+                var func = intent["function"][0];
+
+                if (func["parameters"]) {
+                    var params = func["parameters"][0]["param"];
+                    var resultOptions = {};
+
+                    for (var k = 0; k < params.length ; k++) {
+                        var p = params[k]["$"];
+                        var paramName = p["value"];
+                        var paramValue = rParameters[p["name"]];
+
+                        resultOptions[paramName] = paramValue;
+                    }
+                }
+                 LOG.debug(JSON.stringify(resultOptions));
+                return {
+                    name: intent["function"][0]["name"][0],
+                    options: resultOptions
+                };
             }
         }
     }
@@ -144,6 +176,12 @@ global.playMusic = function playMusic(){
 }
 global.stopMusic = function stopMusic(){
     exec("./shell/music/mpc-cmd.sh 'stop'");
+}
+global.setVolume = function setVolume(options){
+    if (options) {
+        exec("./shell/music/mpc-cmd.sh 'volume "+ options.finalValue +"'");
+    }
+
 }
 
 

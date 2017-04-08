@@ -39,13 +39,29 @@
                 <uid>music.play</uid>
                 <uid>music_player_control.play</uid>
             </uids>
-            <function>playMusic</function>
+            <function>
+                <name>playMusic</name>
+            </function>
         </intent>
         <intent>
             <uids>
                 <uid>music_player_control.stop</uid>
             </uids>
-            <function>stopMusic</function>
+            <function>
+                <name>stopMusic</name>
+            </function>
+        </intent>
+        <intent>
+            <uids>
+                <uid>smarthome.device.volume.set</uid>
+            </uids>
+            <function>
+                <name>setVolume</name>
+                <parameters>
+                    <param name="device" value="device"></param>
+                    <param name="final-value" value="finalValue"></param>
+                </parameters>
+            </function>
         </intent>
   </agents>
 </home-ai>
