@@ -89,13 +89,15 @@ function getRealFunctionCall(response){
         return firstFunctionTry;
     }
 
-    // deprecated
+    // deprecated - use for custom things-intent
     if (things[0][rThing] != undefined) {
         for (var i = 0; i < things[0][rThing].length; i++) {
             var thing = things[0][rThing][i];
             if (thing['action'] == rAction && (thing['location'] == rLocation || (rLocation == "") && thing['location'] == undefined) ) {
                     LOG.info("match ("+ thing['function'] +") :" + thing['action'] + ", " + thing['location']);
-                    return thing['function'];
+                    return {
+                        name: thing['function']
+                    };
             }
         }
     }
@@ -179,6 +181,7 @@ global.stopMusic = function stopMusic(){
 }
 global.setVolume = function setVolume(options){
     if (options) {
+        console.log("./shell/music/mpc-cmd.sh 'volume "+ options.finalValue +"'");
         exec("./shell/music/mpc-cmd.sh 'volume "+ options.finalValue +"'");
     }
 

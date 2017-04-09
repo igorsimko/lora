@@ -63,5 +63,13 @@
                 </parameters>
             </function>
         </intent>
+        <intent>
+            <uids>
+                <uid>weather.temperature</uid>
+            </uids>
+            <function>
+                <name>getTemperatureOutsideInfo</name>
+            </function>
+        </intent>
   </agents>
 </home-ai>

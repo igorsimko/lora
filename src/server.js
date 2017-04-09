@@ -89,6 +89,7 @@ app.post(DEFAULT_API_URL + '/cmd', function(req, res){
                 } else if (command.isLora()){
                     command.callFunctionByName(response);
                 }
+                console.log(response);
                 command.tell(response.result.fulfillment.speech);
 
                 responseMessage = response.result.fulfillment.speech;

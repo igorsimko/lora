@@ -2,4 +2,4 @@
 
 text="$1"
 echo $text > text.log
-espeak -ven+f3 -s01 "$text" 2>/dev/null
+espeak -v en+f4 -s 135 "$text" 2>/dev/null
