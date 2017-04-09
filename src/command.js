@@ -7,6 +7,9 @@ var xml2js = require('xml2js');
 var sys = require('util');
 var exec = require('child_process').exec;
 
+var dateFormat = require('dateformat');
+
+
 var LOG = undefined;
 
 var sha = crypto.createHash('sha256');
@@ -145,28 +148,24 @@ function getPrebuildAgentAction(response){
     }
 }
 
-// global functions
+/* WEATHER */
 global.getTemperatureOutsideInfo = function getTemperatureOutsideInfo(){
     request.post(
         'http://api.openweathermap.org/data/2.5/weather?q=Bratislava&APPID=25d58ec4b67cf6971203cf044ceda2ec&units=metric',
         function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var tempText = "Outside temperature is " + JSON.parse(body).main.temp + " degrees";
-                LOG.debug(tempText);
                 module.exports.tell(tempText);
             }
         }
     );
 }
-// get methods
+
 global.getTemperatureInsideInfo = function getTemperatureInsideInfo(){
     console.log("Inside weather.");
 }
 
-global.getSystemTime = function getSystemTime(){
-    console.log(new Date());
-}
-
+/* MUSIC */
 global.volumeUp = function volumeUp(){
     console.log("volume up!");
 }
@@ -185,6 +184,12 @@ global.setVolume = function setVolume(options){
         exec("./shell/music/mpc-cmd.sh 'volume "+ options.finalValue +"'");
     }
 
+}
+
+/* DATE */
+global.getDate = function getDate(){
+    var tempText = "Today is " + dateFormat(new Date(), "dddd, mmmm dS, yyyy, h:MM:ss");
+    module.exports.tell(tempText);
 }
 
 
