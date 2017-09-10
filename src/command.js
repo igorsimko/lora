@@ -210,7 +210,7 @@ global.playRadio = function playRadio(options){
     if (options) {
         var station = options.station;
         if (station) {
-            if (stationco.toLowerCase().contains("radio fm")) {
+            if (station.toLowerCase().contains("radio fm")) {
                 var station_url = "http://icecast.stv.livebox.sk/fm_128.mp3";
                 exec("(cd ../linux/rcmd/ ; ./rcmd -l "+ station_url +")");
             }

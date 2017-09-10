@@ -81,7 +81,7 @@
         </intent>
         <intent>
             <uids>
-                <uid>radio-play</uid>
+                <uid>radio.play</uid>
             </uids>
             <function>
                 <name>playRadio</name>
