@@ -1,0 +1,15 @@
+[Unit]
+Description=Lora - nodejs server
+
+[Service]
+ExecStart=node ~/git/lora/src/server.js
+Restart=always
+User=nobody
+Group=nobody
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=~/git/lora/src
+
+[Install]
+WantedBy=multi-user.target
+Copy your service file into the 
