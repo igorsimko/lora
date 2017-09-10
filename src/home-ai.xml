@@ -79,5 +79,24 @@
                 <name>getDate</name>
             </function>
         </intent>
+        <intent>
+            <uids>
+                <uid>radio-play</uid>
+            </uids>
+            <function>
+                <name>playRadio</name>
+                <parameters>
+                        <param name="station" value="station"></param>
+                </parameters>
+            </function>
+    </intent>
+        <intent>
+            <uids>
+                <uid>weather.temperature</uid>
+            </uids>
+            <function>
+                <name>getTemperatureOutsideInfo</name>
+            </function>
+        </intent>
   </agents>
 </home-ai>

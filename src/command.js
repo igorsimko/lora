@@ -59,7 +59,6 @@ module.exports = {
   },
   tell: function(text){
     exec("./shell/speak.sh \"" + text + "\"", function(err, stdout, stderr){
-        getPath();
         if (stderr) {
             LOG.error(stderr);
         } else if (err) {
@@ -199,13 +198,28 @@ global.setVolume = function setVolume(options){
         console.log("./shell/music/mpc-cmd.sh 'volume "+ options.finalValue +"'");
         exec("./shell/music/mpc-cmd.sh 'volume "+ options.finalValue +"'");
     }
-
 }
 
 /* DATE */
 global.getDate = function getDate(){
     var tempText = "Today is " + dateFormat(new Date(), "dddd, mmmm dS, yyyy, h:MM:ss");
     module.exports.tell(tempText);
+}
+
+global.playRadio = function playRadio(options){
+    if (options) {
+        var station = options.station;
+        if (station) {
+            if (stationco.toLowerCase().contains("radio fm")) {
+                var station_url = "http://icecast.stv.livebox.sk/fm_128.mp3";
+                exec("(cd ../linux/rcmd/ ; ./rcmd -l "+ station_url +")");
+            }
+        }
+
+    }
+}
+global.stopRadio = function stopRadio(){
+    exec("./shell/music/mpc-cmd.sh 'stop'");
 }
 
 
