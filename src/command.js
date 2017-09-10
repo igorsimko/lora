@@ -9,6 +9,7 @@ var exec = require('child_process').exec;
 
 var dateFormat = require('dateformat');
 
+var basePath = "";
 
 var LOG = undefined;
 
@@ -58,6 +59,7 @@ module.exports = {
   },
   tell: function(text){
     exec("./shell/speak.sh \"" + text + "\"", function(err, stdout, stderr){
+        getPath();
         if (stderr) {
             LOG.error(stderr);
         } else if (err) {
@@ -66,6 +68,20 @@ module.exports = {
     });
   }
 };
+
+function getPath(){
+    exec("pwd", function(err, stdout, stderr){
+        basePath = stdout;
+        if (stderr) {
+            LOG.error(stderr);
+            basePath = "";
+        } else if (err) {
+            LOG.error(err);
+            basePath = "";
+        }
+        LOG.error("|" + basePath + "|");
+    });
+}
 
 function parseHomeAiXML(){
     fs.readFile(__dirname + '/home-ai.xml', function(err, data) {
